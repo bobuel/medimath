@@ -26,6 +26,9 @@
 .tile.road {
   background: #d2b48c;
 }
+.tile.challenge {
+  background: #ffff00;
+}
 .player {
   width: 32px;
   height: 32px;
@@ -33,4 +36,32 @@
 }
 .player.step1 {
   background: #cc0000;
+}
+
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+.modal,
+.win-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  color: #000;
+}
+.modal > div,
+.win-overlay > div {
+  background: #fff;
+  padding: 1rem 2rem;
 }
