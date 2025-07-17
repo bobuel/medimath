@@ -1,4 +1,7 @@
-jest.mock('react-router-dom', () => ({ Link: (props: any) => <a {...props} /> }));
+jest.mock('react-router-dom', () => ({
+  Link: (props: React.ComponentProps<'a'>) => <a {...props} />,
+}));
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Login } from './App';
 
