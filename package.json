@@ -1,0 +1,12 @@
+{
+  "name": "medimath",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "test": "concurrently \"npm --prefix backend test\" \"npm --prefix frontend test\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
