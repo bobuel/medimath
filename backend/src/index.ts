@@ -7,7 +7,32 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-interface User { email: string; passwordHash: string; }
+function getEmail(req: express.Request): string | null {
+  const auth = req.headers.authorization;
+  if (!auth) return null;
+  try {
+    const decoded = jwt.verify(auth.split(' ')[1], JWT_SECRET) as { email: string };
+    return decoded.email;
+  } catch {
+    return null;
+  }
+}
+
+interface Stats { hp: number; attack: number; defense: number }
+export interface CharacterArchetype {
+  id: string
+  name: string
+  description: string
+  avatarUrl: string
+  stats: Stats
+}
+
+interface User {
+  email: string
+  passwordHash: string
+  character?: CharacterArchetype
+}
+
 const users = new Map<string, User>();
 const JWT_SECRET = 'secret';
 
@@ -28,6 +53,25 @@ app.post('/api/login', async (req, res) => {
   if (!valid) return res.status(400).json({ error: 'Invalid credentials' });
   const token = jwt.sign({ email }, JWT_SECRET);
   res.json({ token, email });
+});
+
+app.get('/api/character', (req, res) => {
+  const email = getEmail(req);
+  if (!email) return res.status(401).json({ error: 'Invalid token' });
+  const user = users.get(email);
+  if (!user || !user.character) return res.status(404).json({ error: 'No character' });
+  res.json(user.character);
+});
+
+app.post('/api/character', (req, res) => {
+  const email = getEmail(req);
+  if (!email) return res.status(401).json({ error: 'Invalid token' });
+  const user = users.get(email);
+  if (!user) return res.status(400).json({ error: 'User not found' });
+  const { archetype } = req.body as { archetype: CharacterArchetype };
+  if (!archetype) return res.status(400).json({ error: 'No archetype' });
+  user.character = archetype;
+  res.json({ message: 'saved' });
 });
 
 app.get('/api/protected', (req, res) => {

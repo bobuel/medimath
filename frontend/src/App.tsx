@@ -1,11 +1,26 @@
-/* eslint-disable */
-import React from "react";
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import CreateCharacter from './CreateCharacter';
+import World from './World';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('http://localhost:3001/api/character', {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((res) => {
+        if (res.ok) {
+          window.location.href = '/world';
+        } else {
+          window.location.href = '/create-character';
+        }
+      });
+    }
+  }, []);
   const handleLogin = async () => {
     const res = await fetch('http://localhost:3001/api/login', {
       method: 'POST',
@@ -16,7 +31,14 @@ function Login() {
     if (res.ok) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('email', data.email);
-      window.location.href = '/dashboard';
+      const check = await fetch('http://localhost:3001/api/character', {
+        headers: { Authorization: `Bearer ${data.token}` },
+      });
+      if (check.ok) {
+        window.location.href = '/world';
+      } else {
+        window.location.href = '/create-character';
+      }
     } else {
       alert(data.error);
     }
@@ -60,11 +82,6 @@ function Signup() {
   );
 }
 
-function Dashboard() {
-  const email = localStorage.getItem('email');
-  return <div>Hello, {email}</div>;
-}
-
 function Protected({ children }: { children: React.ReactElement }) {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/" replace />;
@@ -76,7 +93,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+        <Route path="/create-character" element={<Protected><CreateCharacter /></Protected>} />
+        <Route path="/world" element={<Protected><World /></Protected>} />
       </Routes>
     </Router>
   );
