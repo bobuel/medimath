@@ -1,4 +1,10 @@
-export type TileType = "grass" | "forest" | "water" | "mountain" | "road";
+export type TileType =
+  | "grass"
+  | "forest"
+  | "water"
+  | "mountain"
+  | "road"
+  | "challenge";
 
 function mulberry32(seed: number): () => number {
   let t = seed + 0x6d2b79f5;
@@ -25,6 +31,15 @@ export function generateMap(seed = Date.now()): TileType[][] {
       row.push(tile);
     }
     map.push(row);
+  }
+  let placed = 0;
+  while (placed < 15) {
+    const x = Math.floor(rand() * 50);
+    const y = Math.floor(rand() * 50);
+    const tile = map[y][x];
+    if (tile === "water" || tile === "mountain" || tile === "challenge") continue;
+    map[y][x] = "challenge";
+    placed += 1;
   }
   return map;
 }
