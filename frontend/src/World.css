@@ -1,0 +1,36 @@
+.world {
+  width: 480px;
+  height: 480px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(15, 32px);
+  grid-template-rows: repeat(15, 32px);
+  image-rendering: pixelated;
+}
+.tile {
+  width: 32px;
+  height: 32px;
+}
+.tile.grass {
+  background: #7cfc00;
+}
+.tile.forest {
+  background: #228b22;
+}
+.tile.water {
+  background: #1e90ff;
+}
+.tile.mountain {
+  background: #8b4513;
+}
+.tile.road {
+  background: #d2b48c;
+}
+.player {
+  width: 32px;
+  height: 32px;
+  background: #ff0000;
+}
+.player.step1 {
+  background: #cc0000;
+}
